@@ -1,0 +1,25 @@
+# Borrowed cores: published models used frozen (pipeline stage S3 and the retrofit line S13).
+# The function layer reads their hidden states; their weights never change.
+#
+#   python scripts/fetch_model_files.py --model Qwen/Qwen3.5-0.8B --with-weights
+#   core = flow.borrowed.hf_core.load_text_core("models/Qwen3.5-0.8B")
+default: development
+cores:
+  development:
+    model: Qwen/Qwen3.5-0.8B     # 0.752B parameters in the text network; 1.75 GB download
+    revision: null               # pin a commit hash at step S0.2 and record it in ops/lockfile.txt
+    license: Apache-2.0
+    dtype: bfloat16              # float32 on a CPU without bf16 support
+    runs_on: "CPU with 8 GB memory, or any GPU"
+    use: "fast iteration on the function layer; first run of stage S3"
+  target:
+    model: Qwen/Qwen3.5-4B       # 4.206B parameters in the text network; 9.3 GB download
+    revision: null
+    license: Apache-2.0
+    dtype: bfloat16
+    runs_on: "GPU with 12 GB or more (8.4 GB of weights at 16 bits); CPU needs 32 GB and is slow"
+    use: "the model the retrofit line is measured on, once S3 passes on the development core"
+function_layer:
+  taps: all                      # the controller block learns a mix of all hidden states
+  controller: {width: 256, heads: 4, key_dim: 64}   # pipeline 2.7; the toy walkthrough uses width 128
+  max_calls: 4

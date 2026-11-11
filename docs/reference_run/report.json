@@ -1,0 +1,951 @@
+{
+ "settings": {
+  "out": "/home/claude/flow-starter/runs/toy",
+  "quick": false,
+  "core_steps": 900,
+  "fit_steps": 500,
+  "add_steps": 350,
+  "train_records": 6000,
+  "test_records": 600,
+  "seed": 0,
+  "threads": 0
+ },
+ "torch": "2.15.0+cu132",
+ "core_pretraining": [
+  {
+   "step": 150,
+   "loss": 1.4608,
+   "abstain_at_call_sites": 1.0
+  },
+  {
+   "step": 300,
+   "loss": 1.4305,
+   "abstain_at_call_sites": 1.0
+  },
+  {
+   "step": 450,
+   "loss": 1.3954,
+   "abstain_at_call_sites": 1.0
+  },
+  {
+   "step": 600,
+   "loss": 1.4203,
+   "abstain_at_call_sites": 1.0
+  },
+  {
+   "step": 750,
+   "loss": 1.3784,
+   "abstain_at_call_sites": 1.0
+  },
+  {
+   "step": 900,
+   "loss": 1.4267,
+   "abstain_at_call_sites": 1.0
+  }
+ ],
+ "core": {
+  "pattern": "LFFF",
+  "parameters": 523816,
+  "seconds": 383.4
+ },
+ "core_alone": {
+  "add_exact": {
+   "n": 469,
+   "exact": 0,
+   "abstained": 469,
+   "wrong": 0,
+   "exact_rate": 0.0
+  },
+  "all": {
+   "n": 556,
+   "exact": 0,
+   "abstained": 556,
+   "wrong": 0,
+   "exact_rate": 0.0
+  },
+  "compare_numeric": {
+   "n": 292,
+   "exact": 0,
+   "abstained": 292,
+   "wrong": 0,
+   "exact_rate": 0.0
+  }
+ },
+ "fit_add_exact": [
+  {
+   "step": 100,
+   "loss": 0.3959,
+   "call_sites_right": 0.5391,
+   "pointers_right": 0.8903,
+   "false_calls_per_1000_positions": 14.648
+  },
+  {
+   "step": 200,
+   "loss": 0.0569,
+   "call_sites_right": 0.9772,
+   "pointers_right": 1.0,
+   "false_calls_per_1000_positions": 0.0
+  },
+  {
+   "step": 300,
+   "loss": 0.0224,
+   "call_sites_right": 1.0,
+   "pointers_right": 1.0,
+   "false_calls_per_1000_positions": 0.0
+  },
+  {
+   "step": 400,
+   "loss": 0.0178,
+   "call_sites_right": 1.0,
+   "pointers_right": 1.0,
+   "false_calls_per_1000_positions": 0.0
+  },
+  {
+   "step": 500,
+   "loss": 0.0098,
+   "call_sites_right": 1.0,
+   "pointers_right": 1.0,
+   "false_calls_per_1000_positions": 0.0
+  }
+ ],
+ "fit_compare_numeric": [
+  {
+   "step": 87,
+   "loss": 0.2828,
+   "call_sites_right": 0.55,
+   "pointers_right": 0.9509,
+   "false_calls_per_1000_positions": 61.332
+  },
+  {
+   "step": 174,
+   "loss": 0.0327,
+   "call_sites_right": 0.9765,
+   "pointers_right": 1.0,
+   "false_calls_per_1000_positions": 0.0
+  },
+  {
+   "step": 261,
+   "loss": 0.014,
+   "call_sites_right": 1.0,
+   "pointers_right": 1.0,
+   "false_calls_per_1000_positions": 0.0
+  },
+  {
+   "step": 348,
+   "loss": 0.0136,
+   "call_sites_right": 1.0,
+   "pointers_right": 1.0,
+   "false_calls_per_1000_positions": 0.0
+  },
+  {
+   "step": 350,
+   "loss": 0.0139,
+   "call_sites_right": 1.0,
+   "pointers_right": 1.0,
+   "false_calls_per_1000_positions": 0.0
+  }
+ ],
+ "fit_seconds": 106.7,
+ "learned_parameters": {
+  "controller_block": 224133,
+  "heads.add_exact": 127241,
+  "heads.compare_numeric": 127370
+ },
+ "scores": {
+  "test": {
+   "by_template": {
+    "add-1": {
+     "n": 19,
+     "exact": 19,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add-2": {
+     "n": 20,
+     "exact": 20,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add-3": {
+     "n": 22,
+     "exact": 22,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add-4": {
+     "n": 20,
+     "exact": 20,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add-5": {
+     "n": 19,
+     "exact": 19,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add>add": {
+     "n": 24,
+     "exact": 24,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add>eq": {
+     "n": 30,
+     "exact": 30,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add>gt": {
+     "n": 25,
+     "exact": 25,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add>lt": {
+     "n": 13,
+     "exact": 13,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add>sub": {
+     "n": 27,
+     "exact": 27,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "all": {
+     "n": 556,
+     "exact": 556,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "eq-1": {
+     "n": 14,
+     "exact": 14,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "found>eq": {
+     "n": 29,
+     "exact": 29,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "found>gt": {
+     "n": 24,
+     "exact": 24,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "found>lt": {
+     "n": 35,
+     "exact": 35,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "gt-1": {
+     "n": 13,
+     "exact": 13,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "gt-2": {
+     "n": 17,
+     "exact": 17,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "lt-1": {
+     "n": 18,
+     "exact": 18,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "lt-2": {
+     "n": 25,
+     "exact": 25,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "sub-1": {
+     "n": 24,
+     "exact": 24,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "sub-2": {
+     "n": 18,
+     "exact": 18,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "sub-3": {
+     "n": 20,
+     "exact": 20,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "sub-4": {
+     "n": 25,
+     "exact": 25,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "sub>add": {
+     "n": 26,
+     "exact": 26,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "sub>eq": {
+     "n": 26,
+     "exact": 26,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "sub>lt": {
+     "n": 23,
+     "exact": 23,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    }
+   },
+   "by_function": {
+    "add_exact": {
+     "n": 469,
+     "exact": 469,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "all": {
+     "n": 556,
+     "exact": 556,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "compare_numeric": {
+     "n": 292,
+     "exact": 292,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    }
+   }
+  },
+  "long": {
+   "by_template": {
+    "add-1": {
+     "n": 23,
+     "exact": 23,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add-2": {
+     "n": 25,
+     "exact": 25,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add-3": {
+     "n": 26,
+     "exact": 26,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add-4": {
+     "n": 23,
+     "exact": 23,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add-5": {
+     "n": 21,
+     "exact": 21,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add>add": {
+     "n": 17,
+     "exact": 17,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add>eq": {
+     "n": 25,
+     "exact": 25,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add>gt": {
+     "n": 26,
+     "exact": 26,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add>lt": {
+     "n": 25,
+     "exact": 25,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "add>sub": {
+     "n": 24,
+     "exact": 24,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "all": {
+     "n": 555,
+     "exact": 555,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "eq-1": {
+     "n": 31,
+     "exact": 31,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "found>eq": {
+     "n": 21,
+     "exact": 21,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "found>gt": {
+     "n": 23,
+     "exact": 23,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "found>lt": {
+     "n": 19,
+     "exact": 19,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "gt-1": {
+     "n": 24,
+     "exact": 24,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "gt-2": {
+     "n": 19,
+     "exact": 19,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "lt-1": {
+     "n": 19,
+     "exact": 19,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "lt-2": {
+     "n": 24,
+     "exact": 24,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "sub-1": {
+     "n": 19,
+     "exact": 19,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "sub-2": {
+     "n": 14,
+     "exact": 14,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "sub-3": {
+     "n": 22,
+     "exact": 22,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "sub-4": {
+     "n": 18,
+     "exact": 18,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "sub>add": {
+     "n": 28,
+     "exact": 28,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "sub>eq": {
+     "n": 17,
+     "exact": 17,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "sub>lt": {
+     "n": 22,
+     "exact": 22,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    }
+   },
+   "by_function": {
+    "add_exact": {
+     "n": 438,
+     "exact": 438,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "all": {
+     "n": 555,
+     "exact": 555,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "compare_numeric": {
+     "n": 295,
+     "exact": 295,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    }
+   }
+  },
+  "heldout": {
+   "by_template": {
+    "all": {
+     "n": 274,
+     "exact": 274,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "sub>gt": {
+     "n": 274,
+     "exact": 274,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    }
+   },
+   "by_function": {
+    "add_exact": {
+     "n": 274,
+     "exact": 274,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "all": {
+     "n": 274,
+     "exact": 274,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    },
+    "compare_numeric": {
+     "n": 274,
+     "exact": 274,
+     "abstained": 0,
+     "wrong": 0,
+     "exact_rate": 1.0
+    }
+   }
+  },
+  "false_calls": {
+   "positions": 18850,
+   "false_calls": 0,
+   "per_1000": 0.0
+  }
+ },
+ "separation": {
+  "all_loaded": {
+   "add_exact": {
+    "n": 469,
+    "exact": 469,
+    "abstained": 0,
+    "wrong": 0,
+    "exact_rate": 1.0
+   },
+   "all": {
+    "n": 556,
+    "exact": 556,
+    "abstained": 0,
+    "wrong": 0,
+    "exact_rate": 1.0
+   },
+   "compare_numeric": {
+    "n": 292,
+    "exact": 292,
+    "abstained": 0,
+    "wrong": 0,
+    "exact_rate": 1.0
+   }
+  },
+  "removed": {
+   "fn.compare_numeric.v1": {
+    "add_exact": {
+     "n": 469,
+     "exact": 264,
+     "abstained": 205,
+     "wrong": 0,
+     "exact_rate": 0.5629
+    },
+    "all": {
+     "n": 556,
+     "exact": 264,
+     "abstained": 292,
+     "wrong": 0,
+     "exact_rate": 0.4748
+    },
+    "compare_numeric": {
+     "n": 292,
+     "exact": 0,
+     "abstained": 292,
+     "wrong": 0,
+     "exact_rate": 0.0
+    }
+   },
+   "fn.add_exact.v1": {
+    "add_exact": {
+     "n": 469,
+     "exact": 0,
+     "abstained": 469,
+     "wrong": 0,
+     "exact_rate": 0.0
+    },
+    "all": {
+     "n": 556,
+     "exact": 87,
+     "abstained": 469,
+     "wrong": 0,
+     "exact_rate": 0.1565
+    },
+    "compare_numeric": {
+     "n": 292,
+     "exact": 87,
+     "abstained": 205,
+     "wrong": 0,
+     "exact_rate": 0.2979
+    }
+   }
+  },
+  "core_alone": {
+   "add_exact": {
+    "n": 469,
+    "exact": 0,
+    "abstained": 469,
+    "wrong": 0,
+    "exact_rate": 0.0
+   },
+   "all": {
+    "n": 556,
+    "exact": 0,
+    "abstained": 556,
+    "wrong": 0,
+    "exact_rate": 0.0
+   },
+   "compare_numeric": {
+    "n": 292,
+    "exact": 0,
+    "abstained": 292,
+    "wrong": 0,
+    "exact_rate": 0.0
+   }
+  },
+  "localization": {
+   "add_exact": 1.0,
+   "compare_numeric": 1.0
+  },
+  "compare_numeric_only_records_without_add_exact": {
+   "n": 87,
+   "exact_before": 87,
+   "exact_after": 87
+  },
+  "add_exact_only_records_without_compare_numeric": {
+   "n": 264,
+   "exact_before": 264,
+   "exact_after": 264
+  }
+ },
+ "dynamic_loading": {
+  "demo": [
+   {
+    "loaded": [],
+    "text": "mara has 417 coins and gets 85 more . now mara has <abstain>"
+   },
+   {
+    "loaded": [
+     "fn.add_exact.v1"
+    ],
+    "text": "mara has 417 coins and gets 85 more . now mara has 502 .",
+    "load_ms": 22.63,
+    "trace": [
+     {
+      "position": 15,
+      "step": 1,
+      "fn": "fn.add_exact.v1",
+      "op": "add",
+      "score": 0.9991,
+      "pointers": [
+       5,
+       10
+      ],
+      "args": [
+       "417",
+       "85"
+      ],
+      "result": "502",
+      "error": null,
+      "final": true
+     }
+    ]
+   },
+   {
+    "loaded": [
+     "fn.add_exact.v1"
+    ],
+    "text": "ines has 90 shells and gets 25 more . bruno has 170 . does ines have more than bruno ? <abstain>",
+    "trace": [
+     {
+      "position": 24,
+      "step": 1,
+      "fn": "fn.add_exact.v1",
+      "op": "add",
+      "score": 0.9993,
+      "pointers": [
+       4,
+       9
+      ],
+      "args": [
+       "90",
+       "25"
+      ],
+      "result": "115",
+      "error": null,
+      "final": false
+     }
+    ]
+   },
+   {
+    "loaded": [
+     "fn.add_exact.v1",
+     "fn.compare_numeric.v1"
+    ],
+    "text": "ines has 90 shells and gets 25 more . bruno has 170 . does ines have more than bruno ? no .",
+    "load_ms": 12.22,
+    "trace": [
+     {
+      "position": 24,
+      "step": 1,
+      "fn": "fn.add_exact.v1",
+      "op": "add",
+      "score": 0.9993,
+      "pointers": [
+       4,
+       9
+      ],
+      "args": [
+       "90",
+       "25"
+      ],
+      "result": "115",
+      "error": null,
+      "final": false
+     },
+     {
+      "position": 24,
+      "step": 2,
+      "fn": "fn.compare_numeric.v1",
+      "op": "greater",
+      "score": 0.9929,
+      "pointers": [
+       "RES",
+       16
+      ],
+      "args": [
+       "115",
+       "170"
+      ],
+      "result": "no",
+      "error": null,
+      "final": true
+     }
+    ]
+   }
+  ],
+  "events": [
+   {
+    "time": 1794358713.8871524,
+    "action": "load",
+    "module": "fn.add_exact.v1",
+    "ms": 24.16,
+    "bytes": 9570162,
+    "resident_bytes": 9570162
+   },
+   {
+    "time": 1794358713.9004657,
+    "action": "load",
+    "module": "fn.compare_numeric.v1",
+    "ms": 13.29,
+    "bytes": 3233324,
+    "resident_bytes": 12803486
+   },
+   {
+    "time": 1794358723.2078295,
+    "action": "unload",
+    "module": "fn.compare_numeric.v1",
+    "resident_bytes": 9570162
+   },
+   {
+    "time": 1794358725.1453688,
+    "action": "load",
+    "module": "fn.compare_numeric.v1",
+    "ms": 13.42,
+    "bytes": 3233324,
+    "resident_bytes": 12803486
+   },
+   {
+    "time": 1794358725.1454847,
+    "action": "unload",
+    "module": "fn.add_exact.v1",
+    "resident_bytes": 3233324
+   },
+   {
+    "time": 1794358726.2350996,
+    "action": "load",
+    "module": "fn.add_exact.v1",
+    "ms": 24.01,
+    "bytes": 9570162,
+    "resident_bytes": 12803486
+   },
+   {
+    "time": 1794358726.4738765,
+    "action": "unload",
+    "module": "fn.add_exact.v1",
+    "resident_bytes": 3233324
+   },
+   {
+    "time": 1794358726.768681,
+    "action": "load",
+    "module": "fn.add_exact.v1",
+    "ms": 23.16,
+    "bytes": 9570162,
+    "resident_bytes": 12803486
+   },
+   {
+    "time": 1794358727.750238,
+    "action": "unload",
+    "module": "fn.compare_numeric.v1",
+    "resident_bytes": 9570162
+   },
+   {
+    "time": 1794358728.723453,
+    "action": "load",
+    "module": "fn.compare_numeric.v1",
+    "ms": 12.79,
+    "bytes": 3233324,
+    "resident_bytes": 12803486
+   },
+   {
+    "time": 1794358728.7236345,
+    "action": "unload",
+    "module": "fn.add_exact.v1",
+    "resident_bytes": 3233324
+   },
+   {
+    "time": 1794358728.723676,
+    "action": "unload",
+    "module": "fn.compare_numeric.v1",
+    "resident_bytes": 0
+   },
+   {
+    "time": 1794358728.7514544,
+    "action": "load",
+    "module": "fn.add_exact.v1",
+    "ms": 22.63,
+    "bytes": 9570162,
+    "resident_bytes": 9570162
+   },
+   {
+    "time": 1794358728.7846792,
+    "action": "load",
+    "module": "fn.compare_numeric.v1",
+    "ms": 12.22,
+    "bytes": 3233324,
+    "resident_bytes": 12803486
+   }
+  ]
+ },
+ "registry": {
+  "indexed": [
+   "fn.add_exact.v1",
+   "fn.compare_numeric.v1"
+  ],
+  "problems": {},
+  "usage": {
+   "fn.compare_numeric.v1": 1415,
+   "fn.add_exact.v1": 3104
+  }
+ },
+ "seconds_total": 518.3
+}

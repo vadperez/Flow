@@ -1,0 +1,10 @@
+# Blank cores, borrowed cores, function layer, toy walkthrough.
+-r requirements-base.txt
+# On Windows on Arm, install PyTorch first, from its own index (native ARM64 wheels, CPU only):
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+# With an NVIDIA GPU on Windows or Linux, pick the command for your CUDA version at https://pytorch.org/get-started/locally/
+torch>=2.7
+# The Qwen3.5 model code was added to Transformers in February 2026. Tested with 5.22.2.
+transformers>=5.22,<6
+tokenizers>=0.21
+huggingface_hub>=1.0

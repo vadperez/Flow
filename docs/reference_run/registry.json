@@ -1,0 +1,67 @@
+{
+ "exported": "2026-11-11T00:58:48Z",
+ "modules": [
+  {
+   "id": "fn.add_exact.v1",
+   "kind": "register_fn",
+   "function": "add_exact",
+   "domain": null,
+   "parent": null,
+   "version": "1.0.0",
+   "status": "prototype",
+   "fitted_to": "toy-core@sha256:efc10b356809d267",
+   "portable_body": 1,
+   "params": 4529079,
+   "bytes": 9570162,
+   "path": "/home/claude/flow-starter/runs/toy/library/fn.add_exact.v1",
+   "sha256": "{\"body.safetensors\": \"ec7da7059a79054cb52c684bb178158913e96bf08780b5afe103eb879912aa1d\", \"trigger.safetensors\": \"69d95e6d03f7fa5a8f7c600980c43539aa8530e68a0c84be114db166674aa0d0\", \"binder.safetensors\": \"19a5caf8b6d53e4ba558019202f877fb2420ed3c6aa117d508582ffd57d2794d\"}",
+   "added": "2026-11-11T00:58:48Z",
+   "updated": "2026-11-11T00:58:48Z"
+  },
+  {
+   "id": "fn.compare_numeric.v1",
+   "kind": "register_fn",
+   "function": "compare_numeric",
+   "domain": null,
+   "parent": null,
+   "version": "1.0.0",
+   "status": "prototype",
+   "fitted_to": "toy-core@sha256:efc10b356809d267",
+   "portable_body": 1,
+   "params": 1360406,
+   "bytes": 3233324,
+   "path": "/home/claude/flow-starter/runs/toy/library/fn.compare_numeric.v1",
+   "sha256": "{\"body.safetensors\": \"c52de0f87c0be79fd7741d92f7aa867e3f7459ea25e24c97b4d1c6ba720fe610\", \"trigger.safetensors\": \"f24914c4b2f4192c2be2b24f8a8cb3a83e40966616d423ba70e1e2dfb36b3904\", \"binder.safetensors\": \"92f8840f4a85efe144c2925f7080192917fceda221a955c5b3ceeb87bc054e14\"}",
+   "added": "2026-11-11T00:58:48Z",
+   "updated": "2026-11-11T00:58:48Z"
+  }
+ ],
+ "events": [
+  {
+   "time": "2026-11-11T00:58:48Z",
+   "module": "fn.compare_numeric.v1",
+   "event": "added",
+   "detail": "status prototype, 3233324 bytes"
+  },
+  {
+   "time": "2026-11-11T00:58:48Z",
+   "module": "fn.add_exact.v1",
+   "event": "added",
+   "detail": "status prototype, 9570162 bytes"
+  }
+ ],
+ "usage": [
+  {
+   "module": "fn.add_exact.v1",
+   "calls": 3104
+  },
+  {
+   "module": "fn.compare_numeric.v1",
+   "calls": 1415
+  }
+ ],
+ "by_status": {
+  "prototype": 2
+ },
+ "resident_bytes_if_all_loaded": 0
+}

@@ -1,0 +1,8 @@
+Flow starter kit
+Copyright 2026 the Flow project authors
+
+This product includes configuration values of the Qwen3.5 models
+(configs/qwen3_5/), published by Alibaba Cloud under the Apache License 2.0,
+and builds networks with the Qwen3.5 model code of the Hugging Face
+Transformers library (Apache License 2.0). No trained weights of any
+published model are included.

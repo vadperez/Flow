@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flow-starter"
+version = "0.3.0"
+description = "Starter kit for Flow, a function-first modular model: typed registers, written function bodies, a blank core and the function layer"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26",
+    "pyyaml>=6.0",
+    "jsonschema>=4.20",
+    "safetensors>=0.4",
+]
+
+[project.optional-dependencies]
+# Needed for the core, the function layer and the walkthrough.
+model = ["torch>=2.7", "transformers>=5.0", "tokenizers>=0.21"]
+# Needed only to download model files from the Hugging Face Hub.
+hub = ["huggingface_hub>=0.30"]
+dev = ["pytest>=8.0", "hypothesis>=6.100"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+markers = ["slow: exhaustive checks that take minutes (run with: pytest -m slow)"]
+addopts = "-m 'not slow'"
+filterwarnings = ["ignore::DeprecationWarning", "ignore::FutureWarning"]

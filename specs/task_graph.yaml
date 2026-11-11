@@ -1,0 +1,106 @@
+# Flow build pipeline v0.3 (draft): task graph for the orchestrator.
+# Copied from docs/flow-build-pipeline-v0.3-draft.md, section 8, with the step titles added.
+# needs: step ids and gate ids that must be done first. A skipped optional step counts as done.
+# Tool: python ops/next_steps.py
+
+version: "0.3"
+gates:
+  G1: {after: ["S1.6"], approver: HUM}
+  G2: {after: ["S3.5"], approver: HUM}
+  G3: {after: ["S4.6"], approver: HUM}
+  G4: {after: ["S11.5"], approver: HUM}
+stages:
+  S0: "Setup"
+  S1: "Design freeze (gate G1)"
+  S2: "Data and suites"
+  S3: "Walking skeleton on a borrowed core (gate G2)"
+  S4: "Native core (gate G3)"
+  S5: "Function library"
+  S6: "Controller"
+  S7: "Integration and modularity tests"
+  S8: "Runtime, residency and hot swap"
+  S9: "Developmental program"
+  S10: "Baselines (in parallel from G3)"
+  S11: "Evaluation and decision (gate G4)"
+  S12: "Packaging and operations (if go)"
+  S13: "Scale-up and retrofit line (if go)"
+steps:
+  - {id: S0.1, title: "Repository and layout", agent: [OPS], needs: []}
+  - {id: S0.2, title: "Environment pins", agent: [RES, OPS], needs: [S0.1]}
+  - {id: S0.3, title: "License and terms audit", agent: [RES], needs: [S0.1]}
+  - {id: S0.4, title: "Compute and cost plan", agent: [ORC], needs: [S0.2, S0.3]}
+  - {id: S0.5, title: "Operations skeleton", agent: [OPS], needs: [S0.1]}
+  - {id: S1.1, title: "Claims and kill criteria", agent: [ARC], needs: [S0.3]}
+  - {id: S1.2, title: "Vocabulary and signatures", agent: [ARC], needs: [S1.1]}
+  - {id: S1.3, title: "Type system, scanner and emitter", agent: [ARC, PRG], needs: [S1.2]}
+  - {id: S1.4, title: "Module contract and manifest schema", agent: [ARC, OPS], needs: [S1.3]}
+  - {id: S1.5, title: "Test specifications", agent: [ARC, EVL], needs: [S1.2, S1.4]}
+  - {id: S1.6, title: "Targets and gate packet G1", agent: [ORC], needs: [S1.5, S0.4, S0.5]}
+  - {id: S2.1, title: "World generator", agent: [DAT], needs: [G1]}
+  - {id: S2.2, title: "Composition splits and sealed suites", agent: [DAT, EVL], needs: [S2.1]}
+  - {id: S2.3, title: "Base text and tokenizer", agent: [DAT], needs: [S2.1]}
+  - {id: S2.4, title: "Domain data", agent: [DAT], needs: [G1]}
+  - {id: S2.5, title: "Knowledge tables", agent: [DAT], needs: [S2.1]}
+  - {id: S2.6, title: "Library scale-out set", agent: [DAT, SYS], needs: [S2.5]}
+  - {id: S2.7, title: "Data audit", agent: [EVL], needs: [S2.2, S2.3, S2.4, S2.5]}
+  - {id: S3.1, title: "Borrowed-core harness", agent: [TRN, SYS], needs: [G1]}
+  - {id: S3.2, title: "First module end to end: add_exact", agent: [CTL, PRG], needs: [S3.1, S2.7]}
+  - {id: S3.3, title: "One module of each other kind", agent: [PRG, TRN], needs: [S3.2]}
+  - {id: S3.4, title: "Hot swap and trace demo", agent: [SYS], needs: [S3.3]}
+  - {id: S3.5, title: "Skeleton evaluation and gate packet G2", agent: [EVL, ORC], needs: [S3.4]}
+  - {id: S4.1, title: "Core implementation", agent: [TRN, ARC], needs: [G1]}
+  - {id: S4.2, title: "Answer-masked pretraining", agent: [TRN], needs: [S4.1, S2.7, G2]}
+  - {id: S4.3, title: "Core verification", agent: [EVL], needs: [S4.2]}
+  - {id: S4.4, title: "Freeze the language core", agent: [ARC, OPS], needs: [S4.3]}
+  - {id: S4.5, title: "Controller block", agent: [CTL], needs: [S4.4]}
+  - {id: S4.6, title: "Core release 1.0, port of the skeleton, gate packet G3", agent: [TRN, EVL, ORC], needs: [S4.5]}
+  - {id: S5A.1, title: "Body specifications", agent: [PRG], needs: [G2]}
+  - {id: S5A.2, title: "Weight construction", agent: [PRG], needs: [S5A.1]}
+  - {id: S5A.3, title: "Body verification", agent: [PRG], needs: [S5A.2]}
+  - {id: S5A.4, title: "Triggers and binders for programmed functions", agent: [PRG, CTL], needs: [S5A.3, G3]}
+  - {id: S5B.1, title: "Knowledge-pack format and writer", agent: [PRG, SYS], needs: [G2, S2.5]}
+  - {id: S5B.2, title: "fact_lookup function", agent: [PRG, CTL], needs: [S5B.1, G3]}
+  - {id: S5B.3, title: "Learned rows (optional)", agent: [TRN], needs: [G3], optional: true}
+  - {id: S5C.1, title: "State body", agent: [PRG, TRN], needs: [G2]}
+  - {id: S5C.2, title: "Triggers and binders for state functions", agent: [TRN, CTL], needs: [S5C.1, G3]}
+  - {id: S5D.1, title: "Delta skill: extract_slots", agent: [TRN], needs: [G3]}
+  - {id: S5D.2, title: "Domain variant and rule_induce", agent: [TRN], needs: [S5D.1]}
+  - {id: S5E.1, title: "Regulators", agent: [TRN, EVL], needs: [G3]}
+  - {id: S5F.1, title: "Generated modules (optional)", agent: [TRN], needs: [S5D.1], optional: true}
+  - {id: S6.1, title: "Arbitration", agent: [CTL], needs: [S5A.4, S5B.2, S5C.2, S5D.2, S5E.1]}
+  - {id: S6.2, title: "Span policy for delta skills", agent: [CTL], needs: [S6.1]}
+  - {id: S6.3, title: "Prefetch", agent: [CTL, SYS], needs: [S6.1]}
+  - {id: S6.4, title: "Behavior with missing modules", agent: [CTL], needs: [S6.2]}
+  - {id: S6.5, title: "Controller evaluation", agent: [EVL], needs: [S6.3, S6.4]}
+  - {id: S7.1, title: "Assembly", agent: [SYS], needs: [S6.5, S5B.3, S5F.1]}
+  - {id: S7.2, title: "Interference and conflict tests", agent: [EVL], needs: [S7.1]}
+  - {id: S7.3, title: "Localization matrix", agent: [EVL], needs: [S7.2]}
+  - {id: S7.4, title: "Composition evaluation", agent: [EVL], needs: [S7.2]}
+  - {id: S7.5, title: "Promotion", agent: [OPS], needs: [S7.3, S7.4]}
+  - {id: S8.1, title: "Reference runtime", agent: [SYS], needs: [G2]}
+  - {id: S8.2, title: "Residency manager and hot-swap engine", agent: [SYS], needs: [S8.1]}
+  - {id: S8.3, title: "Swap equivalence and stress tests", agent: [SYS, EVL], needs: [S8.2]}
+  - {id: S8.4, title: "Scale-out and hardware profiling", agent: [SYS], needs: [S8.3, S2.6]}
+  - {id: S8.5, title: "Device tests", agent: [SYS, EVL], needs: [S8.4, S7.5]}
+  - {id: S8.6, title: "Compatibility guard", agent: [SYS], needs: [S8.5]}
+  - {id: S9.1, title: "Usage telemetry", agent: [OPS], needs: [S7.5]}
+  - {id: S9.2, title: "Differentiation", agent: [TRN, ARC], needs: [S9.1]}
+  - {id: S9.3, title: "Duplicate merging", agent: [TRN], needs: [S9.1]}
+  - {id: S9.4, title: "Suppression", agent: [OPS], needs: [S9.1]}
+  - {id: S9.5, title: "Elimination trials", agent: [EVL], needs: [S9.3, S9.4]}
+  - {id: S9.6, title: "Add-a-function trial", agent: [TRN, EVL], needs: [S7.5]}
+  - {id: S9.7, title: "Lifecycle report", agent: [ORC], needs: [S9.2, S9.3, S9.5, S9.6]}
+  - {id: S10.1, title: "Baseline: dense, matched on active parameters", agent: [TRN], needs: [S2.7, G3]}
+  - {id: S10.2, title: "Baseline: dense, matched on total parameters", agent: [TRN], needs: [S2.7, G3]}
+  - {id: S10.3, title: "Baseline: token-routed mixture of experts", agent: [TRN], needs: [S2.7, G3]}
+  - {id: S10.4, title: "Baseline: mixture of experts with switching penalty", agent: [TRN], needs: [S2.7, G3]}
+  - {id: S10.5, title: "Baseline: dense with the trace as a scratchpad", agent: [TRN], needs: [S2.7, G3]}
+  - {id: S10.6, title: "Text-tool baseline (optional)", agent: [TRN], needs: [S2.7, G3], optional: true}
+  - {id: S10.7, title: "Baseline evaluation", agent: [EVL], needs: [S10.1, S10.2, S10.3, S10.4, S10.5, S10.6]}
+  - {id: S11.1, title: "Full metric suite", agent: [EVL], needs: [S10.7, S9.7, S8.5]}
+  - {id: S11.2, title: "Ablations", agent: [EVL], needs: [S11.1]}
+  - {id: S11.3, title: "Kill-criteria check", agent: [EVL], needs: [S11.1]}
+  - {id: S11.4, title: "Adversarial review", agent: [EVL], needs: [S11.2, S11.3], fresh_context: true}
+  - {id: S11.5, title: "Report and gate packet G4", agent: [ORC], needs: [S11.4, S8.6]}
+  - {id: S12, title: "Packaging and operations (if go)", agent: [OPS, ARC, TRN], needs: [G4], when: "G4 = go"}
+  - {id: S13, title: "Scale-up and retrofit line (if go)", agent: [ARC, ORC, SYS], needs: [G4], when: "G4 = go"}

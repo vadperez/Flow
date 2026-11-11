@@ -1,0 +1,37 @@
+id: fn.compare_numeric.v1
+kind: register_fn
+function: compare_numeric
+operations:
+- greater
+- less
+- equal
+signature:
+  args:
+  - NUMBER
+  - NUMBER
+  result: FLAG
+parent: null
+body:
+  file: body.safetensors
+  route: programmed
+  format: flow-circuit-1
+  dtype: float16
+portable_body: true
+fitted_to: null
+swap:
+  any_token: true
+  kv_write: false
+cost:
+  params: 1360406
+  nonzero: 23598
+  bytes: 2721668
+  flops_per_call: 47196.0
+tests: tests/test_compare.py
+provenance:
+  builder: scripts/build_library.py
+  license: Apache-2.0
+  built: '2026-11-10'
+status: prototype
+version: 1.0.0
+sha256:
+  body.safetensors: c52de0f87c0be79fd7741d92f7aa867e3f7459ea25e24c97b4d1c6ba720fe610

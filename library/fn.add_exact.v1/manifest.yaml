@@ -1,0 +1,36 @@
+id: fn.add_exact.v1
+kind: register_fn
+function: add_exact
+operations:
+- add
+- subtract
+signature:
+  args:
+  - NUMBER
+  - NUMBER
+  result: NUMBER
+parent: null
+body:
+  file: body.safetensors
+  route: programmed
+  format: flow-circuit-1
+  dtype: float16
+portable_body: true
+fitted_to: null
+swap:
+  any_token: true
+  kv_write: false
+cost:
+  params: 4529079
+  nonzero: 144046
+  bytes: 9059022
+  flops_per_call: 288092.0
+tests: tests/test_add_exact.py
+provenance:
+  builder: scripts/build_library.py
+  license: Apache-2.0
+  built: '2026-11-10'
+status: prototype
+version: 1.0.0
+sha256:
+  body.safetensors: ec7da7059a79054cb52c684bb178158913e96bf08780b5afe103eb879912aa1d

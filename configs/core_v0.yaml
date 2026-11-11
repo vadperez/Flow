@@ -1,0 +1,26 @@
+# Flow native core v0: a small network with the Qwen3.5 text architecture, built WITHOUT trained
+# weights and pretrained by this project (pipeline stage S4). Fields are those of
+# flow.core.blank.CoreSpec.
+#
+#   python scripts/make_blank_model.py --spec configs/core_v0.yaml --describe
+#   python scripts/make_blank_model.py --spec configs/core_v0.yaml --out runs/blank-flow-core
+#
+# With these values: 34.70M parameters (8.39M embeddings), 69 MB at 16 bits, 16 layer passes
+# per token from 8 unique layers.
+vocab_size: 16384          # 8,192 BPE pieces + up to 8,192 whole-word symbol tokens (pipeline 2.7)
+hidden_size: 512
+intermediate_size: 1344    # gated MLP with three matrices; same size as a 2,048 two-matrix MLP
+heads: 8                   # full-attention layers
+kv_heads: 2
+head_dim: 64               # a quarter of it carries rotary positions
+linear_heads: 8            # linear-attention layers (Gated DeltaNet)
+linear_head_dim: 64
+conv_kernel: 4             # causal convolution over the current and 3 previous tokens
+entry: "LL"                # run once.            L = linear attention, F = full attention
+loop: "LFLL"               # run loop_passes times with the same parameters
+loop_passes: 3
+exit: "LF"                 # run once
+max_positions: 4096
+pad_token_id: 0
+bos_token_id: 1
+eos_token_id: 2

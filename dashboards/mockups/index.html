@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flow console (mockup)</title>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7; --border: rgba(11,11,11,.10); --wash: rgba(11,11,11,.04);
+  --s1: #2a78d6; --s1-track: #cde2fb; --s2: #eb6834; --s3: #1baf7a;
+  --good: #0ca30c; --warn: #fab219; --serious: #ec835a; --crit: #d03b3b;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--page); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; display: flex; flex-direction: column; min-height: 100%; }
+header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 16px; border-bottom: 1px solid var(--border); background: var(--surface); }
+header h1 { font-size: 16px; margin: 0; font-weight: 650; }
+header .note { color: var(--ink2); font-size: 13px; }
+header .spacer { flex: 1; }
+button, .filebtn { font: inherit; padding: 6px 12px; border: 1px solid var(--axis); border-radius: 6px; background: var(--surface); color: var(--ink); cursor: pointer; }
+button:hover, .filebtn:hover { background: var(--wash); }
+button:focus-visible, .filebtn:focus-within, select:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
+.filebtn input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.badge { font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--axis); color: var(--ink2); white-space: nowrap; }
+main { display: grid; gap: 12px; padding: 12px 16px 16px; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); flex: 1 1 0; min-height: 600px; }
+section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; min-height: 0; }
+section > .body { overflow: auto; min-height: 0; flex: 1; }
+h2 { font-size: 14px; margin: 0 0 2px; font-weight: 650; display: flex; align-items: baseline; gap: 8px; }
+h2 .src { font-weight: 400; font-size: 12px; color: var(--muted); margin-left: auto; white-space: nowrap; }
+.sub { color: var(--ink2); font-size: 13px; margin: 0 0 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th { text-align: left; font-weight: 600; color: var(--ink2); border-bottom: 1px solid var(--axis); padding: 4px 8px 4px 0; white-space: nowrap; }
+td { border-bottom: 1px solid var(--grid); padding: 4px 8px 4px 0; vertical-align: top; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+#res { display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
+#res > div:first-child { flex: none; }
+#res > div:last-child { flex: 1 1 auto; min-height: 0; overflow: auto; }
+#res td code { white-space: nowrap; }
+code, .mono { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 12.5px; }
+.pill { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.pill i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; background: var(--muted); }
+.pill.good i { background: var(--good); } .pill.warn i { background: var(--warn); border-radius: 2px; }
+.pill.crit i { background: var(--crit); border-radius: 0; transform: rotate(45deg); } .pill.info i { background: var(--s1); }
+.gates { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.gates .badge { color: var(--ink); }
+.stage { display: grid; grid-template-columns: 34px minmax(60px, 1fr) 46px minmax(0, 2.2fr); gap: 8px; align-items: center; padding: 2px 0; font-size: 13px; }
+.stage .track { height: 10px; background: var(--s1-track); border-radius: 0 4px 4px 0; position: relative; }
+.stage .fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--s1); border-radius: 0 4px 4px 0; }
+.stage .title { color: var(--ink2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stage .count { font-variant-numeric: tabular-nums; text-align: right; }
+.ready { margin: 8px 0 0; padding: 0; list-style: none; font-size: 13px; }
+.ready li { padding: 2px 0; }
+.tiles { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 8px; }
+.tile .v { font-size: 22px; font-weight: 650; line-height: 1.1; }
+.tile .l { color: var(--ink2); font-size: 12px; }
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; min-height: 0; }
+svg text { font: 11px system-ui, -apple-system, "Segoe UI", sans-serif; fill: var(--muted); }
+#tip { position: fixed; pointer-events: none; background: var(--ink); color: #fff; padding: 6px 9px; border-radius: 6px; font-size: 12px; display: none; z-index: 5; max-width: 280px; }
+#tip b { display: block; font-size: 13px; }
+.text { font-size: 15px; line-height: 2.1; margin: 4px 0 8px; }
+.text span { padding: 2px 3px; border-radius: 4px; }
+.text .site { outline: 2px solid var(--s1); }
+.text .arg { border-bottom: 3px solid var(--s2); border-radius: 0; }
+.text .out { background: color-mix(in srgb, var(--s3) 22%, transparent); }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--ink2); margin-bottom: 6px; }
+.legend i { display: inline-block; width: 14px; height: 10px; vertical-align: -1px; margin-right: 5px; }
+select { font: inherit; padding: 4px 6px; border: 1px solid var(--axis); border-radius: 6px; background: var(--surface); max-width: 100%; }
+.skeleton { height: 12px; border-radius: 4px; background: var(--grid); margin: 8px 0; }
+.empty { color: var(--muted); font-size: 13px; padding: 8px 0; }
+@media (max-width: 900px) { main { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; flex: none; min-height: 0; } section > .body { overflow-x: auto; overflow-y: visible; } #res { overflow: visible; } .text { overflow-wrap: anywhere; } .split { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Flow console</h1>
+  <span class="badge">mockup for approval</span>
+  <span class="note" id="hint">Showing the embedded sample.</span>
+  <span class="spacer"></span>
+  <span class="badge" id="source">sample data</span>
+  <label class="filebtn">Open files…<input id="files" type="file" accept=".json,application/json" multiple></label>
+  <button id="export" type="button">Export view (.json)</button>
+</header>
+<main>
+  <section aria-labelledby="h-pipe">
+    <h2 id="h-pipe">Pipeline <span class="src" id="src-status"></span></h2>
+    <p class="sub" id="pipe-sub">&nbsp;</p>
+    <div class="body" id="pipe"><div class="skeleton"></div><div class="skeleton" style="width:70%"></div><div class="skeleton" style="width:85%"></div></div>
+  </section>
+  <section aria-labelledby="h-mod">
+    <h2 id="h-mod">Module registry <span class="src" id="src-registry"></span></h2>
+    <p class="sub">Packs on disk, their lifecycle status and the core each was fitted to.</p>
+    <div class="body" id="mods"><div class="skeleton"></div><div class="skeleton" style="width:60%"></div></div>
+  </section>
+  <section aria-labelledby="h-res">
+    <h2 id="h-res">Residency <span class="src" id="src-report"></span></h2>
+    <p class="sub">Memory held by loaded modules after each load and unload of the last session.</p>
+    <div class="body split" id="res"><div><div class="skeleton"></div><div class="skeleton" style="width:80%"></div></div><div></div></div>
+  </section>
+  <section aria-labelledby="h-trace">
+    <h2 id="h-trace">Trace viewer <span class="src" id="src-trace"></span></h2>
+    <p class="sub">What was printed, and the calls behind it.</p>
+    <div class="body" id="trace"><div class="skeleton"></div><div class="skeleton" style="width:75%"></div></div>
+  </section>
+</main>
+<div id="tip" role="status"></div>
+<script id="sample" type="application/json">
+/*SAMPLE-START*/{"status": {"gates": {}, "summary": {"updated": "2026-11-11T01:05:38Z", "total": 79, "done": 0, "ready": ["S0.1"], "ready_info": [{"id": "S0.1", "title": "Repository and layout", "agent": ["OPS"]}], "waiting_for_gate": [{"step": "S2.1", "gates": ["G1"]}, {"step": "S2.4", "gates": ["G1"]}, {"step": "S3.1", "gates": ["G1"]}, {"step": "S4.1", "gates": ["G1"]}, {"step": "S5A.1", "gates": ["G2"]}, {"step": "S5B.3", "gates": ["G3"]}, {"step": "S5C.1", "gates": ["G2"]}, {"step": "S5D.1", "gates": ["G3"]}, {"step": "S5E.1", "gates": ["G3"]}, {"step": "S8.1", "gates": ["G2"]}, {"step": "S12", "gates": ["G4"]}, {"step": "S13", "gates": ["G4"]}], "blocked": 66, "gates": {"G1": {"decision": "not reached"}, "G2": {"decision": "not reached"}, "G3": {"decision": "not reached"}, "G4": {"decision": "not reached"}}, "gates_awaiting_decision": [], "stopped": {}, "stages": {"S0": {"title": "Setup", "total": 5, "done": 0}, "S1": {"title": "Design freeze (gate G1)", "total": 6, "done": 0}, "S2": {"title": "Data and suites", "total": 7, "done": 0}, "S3": {"title": "Walking skeleton on a borrowed core (gate G2)", "total": 5, "done": 0}, "S4": {"title": "Native core (gate G3)", "total": 6, "done": 0}, "S5": {"title": "Function library", "total": 13, "done": 0}, "S6": {"title": "Controller", "total": 5, "done": 0}, "S7": {"title": "Integration and modularity tests", "total": 5, "done": 0}, "S8": {"title": "Runtime, residency and hot swap", "total": 6, "done": 0}, "S9": {"title": "Developmental program", "total": 7, "done": 0}, "S10": {"title": "Baselines (in parallel from G3)", "total": 7, "done": 0}, "S11": {"title": "Evaluation and decision (gate G4)", "total": 5, "done": 0}, "S12": {"title": "Packaging and operations (if go)", "total": 1, "done": 0}, "S13": {"title": "Scale-up and retrofit line (if go)", "total": 1, "done": 0}}}}, "registry": {"exported": "2026-11-11T00:58:48Z", "modules": [{"id": "fn.add_exact.v1", "kind": "register_fn", "function": "add_exact", "domain": null, "parent": null, "version": "1.0.0", "status": "prototype", "fitted_to": "toy-core@sha256:efc10b356809d267", "portable_body": 1, "params": 4529079, "bytes": 9570162, "path": "/home/claude/flow-starter/runs/toy/library/fn.add_exact.v1", "sha256": "{\"body.safetensors\": \"ec7da7059a79054cb52c684bb178158913e96bf08780b5afe103eb879912aa1d\", \"trigger.safetensors\": \"69d95e6d03f7fa5a8f7c600980c43539aa8530e68a0c84be114db166674aa0d0\", \"binder.safetensors\": \"19a5caf8b6d53e4ba558019202f877fb2420ed3c6aa117d508582ffd57d2794d\"}", "added": "2026-11-11T00:58:48Z", "updated": "2026-11-11T00:58:48Z"}, {"id": "fn.compare_numeric.v1", "kind": "register_fn", "function": "compare_numeric", "domain": null, "parent": null, "version": "1.0.0", "status": "prototype", "fitted_to": "toy-core@sha256:efc10b356809d267", "portable_body": 1, "params": 1360406, "bytes": 3233324, "path": "/home/claude/flow-starter/runs/toy/library/fn.compare_numeric.v1", "sha256": "{\"body.safetensors\": \"c52de0f87c0be79fd7741d92f7aa867e3f7459ea25e24c97b4d1c6ba720fe610\", \"trigger.safetensors\": \"f24914c4b2f4192c2be2b24f8a8cb3a83e40966616d423ba70e1e2dfb36b3904\", \"binder.safetensors\": \"92f8840f4a85efe144c2925f7080192917fceda221a955c5b3ceeb87bc054e14\"}", "added": "2026-11-11T00:58:48Z", "updated": "2026-11-11T00:58:48Z"}], "events": [{"time": "2026-11-11T00:58:48Z", "module": "fn.compare_numeric.v1", "event": "added", "detail": "status prototype, 3233324 bytes"}, {"time": "2026-11-11T00:58:48Z", "module": "fn.add_exact.v1", "event": "added", "detail": "status prototype, 9570162 bytes"}], "usage": [{"module": "fn.add_exact.v1", "calls": 3104}, {"module": "fn.compare_numeric.v1", "calls": 1415}], "by_status": {"prototype": 2}, "resident_bytes_if_all_loaded": 0}, "report": {"dynamic_loading": {"demo": [{"loaded": [], "text": "mara has 417 coins and gets 85 more . now mara has <abstain>"}, {"loaded": ["fn.add_exact.v1"], "text": "mara has 417 coins and gets 85 more . now mara has 502 .", "load_ms": 22.63, "trace": [{"position": 15, "step": 1, "fn": "fn.add_exact.v1", "op": "add", "score": 0.9991, "pointers": [5, 10], "args": ["417", "85"], "result": "502", "error": null, "final": true}]}, {"loaded": ["fn.add_exact.v1"], "text": "ines has 90 shells and gets 25 more . bruno has 170 . does ines have more than bruno ? <abstain>", "trace": [{"position": 24, "step": 1, "fn": "fn.add_exact.v1", "op": "add", "score": 0.9993, "pointers": [4, 9], "args": ["90", "25"], "result": "115", "error": null, "final": false}]}, {"loaded": ["fn.add_exact.v1", "fn.compare_numeric.v1"], "text": "ines has 90 shells and gets 25 more . bruno has 170 . does ines have more than bruno ? no .", "load_ms": 12.22, "trace": [{"position": 24, "step": 1, "fn": "fn.add_exact.v1", "op": "add", "score": 0.9993, "pointers": [4, 9], "args": ["90", "25"], "result": "115", "error": null, "final": false}, {"position": 24, "step": 2, "fn": "fn.compare_numeric.v1", "op": "greater", "score": 0.9929, "pointers": ["RES", 16], "args": ["115", "170"], "result": "no", "error": null, "final": true}]}], "events": [{"time": 1794358713.8871524, "action": "load", "module": "fn.add_exact.v1", "ms": 24.16, "bytes": 9570162, "resident_bytes": 9570162}, {"time": 1794358713.9004657, "action": "load", "module": "fn.compare_numeric.v1", "ms": 13.29, "bytes": 3233324, "resident_bytes": 12803486}, {"time": 1794358723.2078295, "action": "unload", "module": "fn.compare_numeric.v1", "resident_bytes": 9570162}, {"time": 1794358725.1453688, "action": "load", "module": "fn.compare_numeric.v1", "ms": 13.42, "bytes": 3233324, "resident_bytes": 12803486}, {"time": 1794358725.1454847, "action": "unload", "module": "fn.add_exact.v1", "resident_bytes": 3233324}, {"time": 1794358726.2350996, "action": "load", "module": "fn.add_exact.v1", "ms": 24.01, "bytes": 9570162, "resident_bytes": 12803486}, {"time": 1794358726.4738765, "action": "unload", "module": "fn.add_exact.v1", "resident_bytes": 3233324}, {"time": 1794358726.768681, "action": "load", "module": "fn.add_exact.v1", "ms": 23.16, "bytes": 9570162, "resident_bytes": 12803486}, {"time": 1794358727.750238, "action": "unload", "module": "fn.compare_numeric.v1", "resident_bytes": 9570162}, {"time": 1794358728.723453, "action": "load", "module": "fn.compare_numeric.v1", "ms": 12.79, "bytes": 3233324, "resident_bytes": 12803486}, {"time": 1794358728.7236345, "action": "unload", "module": "fn.add_exact.v1", "resident_bytes": 3233324}, {"time": 1794358728.723676, "action": "unload", "module": "fn.compare_numeric.v1", "resident_bytes": 0}, {"time": 1794358728.7514544, "action": "load", "module": "fn.add_exact.v1", "ms": 22.63, "bytes": 9570162, "resident_bytes": 9570162}, {"time": 1794358728.7846792, "action": "load", "module": "fn.compare_numeric.v1", "ms": 12.22, "bytes": 3233324, "resident_bytes": 12803486}]}}}/*SAMPLE-END*/
+</script>
+<script>
+"use strict";
+// Mockup of the Flow operations console. Data: embedded sample first (instant), then, when the
+// folder is served over HTTP, the live files; files can also be opened or dropped by hand.
+//   ops/status.json          written by ops/next_steps.py
+//   reports/registry.json    written by: python -m flow.registry export reports/registry.json
+//   runs/toy/report.json     written by scripts/toy_walkthrough.py
+const LIVE = { status: "../../ops/status.json", registry: "../../reports/registry.json", report: "../../runs/toy/report.json" };
+const state = { status: null, registry: null, report: null };
+const origin = { status: "none", registry: "none", report: "none" };
+const $ = (id) => document.getElementById(id);
+const el = (tag, attrs, ...kids) => {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) { if (k === "class") node.className = v; else if (k === "text") node.textContent = v; else node.setAttribute(k, v); }
+  for (const kid of kids) node.append(kid);
+  return node;
+};
+const svg = (tag, attrs) => { const n = document.createElementNS("http://www.w3.org/2000/svg", tag); for (const [k, v] of Object.entries(attrs || {})) n.setAttribute(k, v); return n; };
+const bytes = (n) => n == null ? "" : n >= 1e9 ? (n / 1e9).toFixed(2) + " GB" : n >= 1e6 ? (n / 1e6).toFixed(1) + " MB" : n >= 1e3 ? (n / 1e3).toFixed(0) + " kB" : n + " B";
+const pill = (kind, label) => el("span", { class: "pill " + kind }, el("i"), document.createTextNode(label));
+const STATUS_KIND = { active: "good", prototype: "info", proposed: "", differentiating: "info", suppressed: "warn", eliminated: "crit", archived: "" };
+const GATE_KIND = { go: "good", stop: "crit", pivot: "warn", open: "warn", "not reached": "" };
+
+function kindOf(data) {
+  if (data && data.gates && (data.steps || data.summary)) return "status";
+  if (data && Array.isArray(data.modules)) return "registry";
+  if (data && (data.dynamic_loading || data.scores)) return "report";
+  return null;
+}
+function setData(kind, data, from) { state[kind] = data; origin[kind] = from; render(); }
+
+function render() {
+  renderPipeline(); renderModules(); renderResidency(); renderTrace();
+  const kinds = Object.values(origin);
+  const live = kinds.filter((k) => k === "live" || k === "file").length;
+  $("source").textContent = live === 0 ? "sample data" : live === 3 ? "your data" : `your data: ${live} of 3 panels`;
+  $("hint").textContent = live === 0
+    ? "Embedded sample. Open or drop your status.json, registry.json and report.json."
+    : "Open or drop newer files at any time.";
+  for (const [k, id] of [["status", "src-status"], ["registry", "src-registry"], ["report", "src-report"], ["report", "src-trace"]]) $(id).textContent = origin[k] === "none" ? "" : origin[k];
+}
+
+function renderPipeline() {
+  const box = $("pipe"); const s = state.status && (state.status.summary || state.status);
+  if (!s || !s.stages) { box.replaceChildren(el("div", { class: "empty", text: "No status file yet. Run: python ops/next_steps.py" })); $("pipe-sub").textContent = ""; return; }
+  $("pipe-sub").textContent = `${s.done} of ${s.total} steps done` + (s.updated ? ` · updated ${s.updated}` : "");
+  const gates = el("div", { class: "gates" });
+  for (const [g, v] of Object.entries(s.gates || {})) gates.append(el("span", { class: "badge" }, document.createTextNode(g + " "), pill(GATE_KIND[v.decision] ?? "", v.decision)));
+  const list = el("div");
+  for (const [id, st] of Object.entries(s.stages)) {
+    const row = el("div", { class: "stage", tabindex: "0" });
+    const track = el("div", { class: "track", role: "img", "aria-label": `${id}: ${st.done} of ${st.total} steps done` });
+    track.append(el("div", { class: "fill", style: `width:${st.total ? (100 * st.done / st.total) : 0}%` }));
+    row.append(el("b", { text: id }), track, el("span", { class: "count", text: `${st.done}/${st.total}` }), el("span", { class: "title", text: st.title, title: st.title }));
+    tipOn(row, () => [`${st.done} of ${st.total} steps`, `${id} · ${st.title}`]);
+    list.append(row);
+  }
+  const ready = el("ul", { class: "ready" });
+  const info = Object.fromEntries((s.ready_info || []).map((r) => [r.id, r]));
+  for (const id of (s.ready || []).slice(0, 6)) ready.append(el("li", {}, el("b", { text: id + " " }),
+    document.createTextNode(info[id] ? `${info[id].title} (${info[id].agent.join(", ")})` : "")));
+  const waiting = (s.gates_awaiting_decision || []).map((g) => el("li", {}, pill("warn", `${g} is waiting for your decision`)));
+  box.replaceChildren(gates, list, el("p", { class: "sub", style: "margin:10px 0 0", text: "Can start now" }), ready, ...waiting);
+  if (!(s.ready || []).length) ready.append(el("li", { class: "empty", text: "Nothing: waiting for a gate." }));
+}
+
+function renderModules() {
+  const box = $("mods"); const r = state.registry;
+  if (!r) { box.replaceChildren(el("div", { class: "empty", text: "No registry export yet. Run: python -m flow.registry scan library/ && python -m flow.registry export reports/registry.json" })); return; }
+  const active = r.modules.filter((m) => m.status === "active");
+  const tiles = el("div", { class: "tiles" });
+  for (const [v, l] of [[r.modules.length, "module packs"], [active.length, "active"], [bytes(r.modules.reduce((a, m) => a + (m.bytes || 0), 0)), "on disk"],
+                        [bytes(r.resident_bytes_if_all_loaded || 0), "resident if all active are loaded"]]) tiles.append(el("div", { class: "tile" }, el("div", { class: "v", text: String(v) }), el("div", { class: "l", text: l })));
+  const table = el("table", {}, el("thead", {}, el("tr", {}, ...["Module", "Kind", "Status", "Size", "Fitted to", "Calls"].map((h, i) => el("th", { class: i === 3 || i === 5 ? "num" : "", text: h })))));
+  const usage = Object.fromEntries((r.usage || []).map((u) => [u.module, u.calls]));
+  const body = el("tbody");
+  for (const m of r.modules) body.append(el("tr", {}, el("td", {}, el("code", { text: m.id })), el("td", { text: m.kind }), el("td", {}, pill(STATUS_KIND[m.status] ?? "", m.status)),
+    el("td", { class: "num", text: bytes(m.bytes) }), el("td", { text: m.fitted_to || "body only (portable)" }), el("td", { class: "num", text: String(usage[m.id] ?? 0) })));
+  table.append(body);
+  const events = el("table", {}, el("thead", {}, el("tr", {}, ...["Time", "Module", "Event", "Detail"].map((h) => el("th", { text: h })))));
+  const eb = el("tbody");
+  for (const e of (r.events || []).slice(0, 8)) eb.append(el("tr", {}, el("td", { class: "mono", text: e.time }), el("td", {}, el("code", { text: e.module })), el("td", { text: e.event }), el("td", { text: e.detail || "" })));
+  events.append(eb);
+  box.replaceChildren(tiles, table, el("p", { class: "sub", style: "margin:12px 0 4px", text: "Latest registry events" }), events);
+}
+
+function renderResidency() {
+  const box = $("res"); const events = state.report && state.report.dynamic_loading && state.report.dynamic_loading.events;
+  if (!events || !events.length) { box.replaceChildren(el("div", { class: "empty", text: "No session events yet. Run: python scripts/toy_walkthrough.py" })); return; }
+  const W = 560, H = 118, m = { l: 44, r: 62, t: 8, b: 20 };
+  const max = Math.max(...events.map((e) => e.resident_bytes), 1);
+  const top = Math.ceil(max / 5e6) * 5e6;
+  const x = (i) => m.l + (W - m.l - m.r) * (events.length === 1 ? 0.5 : i / (events.length - 1));
+  const y = (v) => H - m.b - (H - m.t - m.b) * v / top;
+  const chart = svg("svg", { viewBox: `0 0 ${W} ${H}`, width: "100%", role: "img", "aria-label": "Resident bytes after each load and unload" });
+  for (let t = 0; t <= top; t += top / 2) {
+    chart.append(svg("line", { x1: m.l, x2: W - m.r, y1: y(t), y2: y(t), stroke: t === 0 ? "var(--axis)" : "var(--grid)", "stroke-width": 1 }));
+    const label = svg("text", { x: m.l - 6, y: y(t) + 4, "text-anchor": "end" }); label.textContent = (t / 1e6).toFixed(Number.isInteger(t / 1e6) ? 0 : 1) + " MB"; chart.append(label);
+  }
+  let d = `M ${x(0)} ${y(0)} V ${y(events[0].resident_bytes)}`;
+  events.forEach((e, i) => { if (i) d += ` H ${x(i)} V ${y(e.resident_bytes)}`; });
+  chart.append(svg("path", { d, fill: "none", stroke: "var(--s1)", "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }));
+  const last = events[events.length - 1];
+  chart.append(svg("circle", { cx: x(events.length - 1), cy: y(last.resident_bytes), r: 4, fill: "var(--s1)", stroke: "var(--surface)", "stroke-width": 2 }));
+  const end = svg("text", { x: x(events.length - 1) + 8, y: y(last.resident_bytes) + 4, style: "fill: var(--ink)" }); end.textContent = bytes(last.resident_bytes); chart.append(end);
+  const axis = svg("text", { x: m.l, y: H - 6 }); axis.textContent = "event 1"; chart.append(axis);
+  const axis2 = svg("text", { x: W - m.r, y: H - 6, "text-anchor": "end" }); axis2.textContent = "event " + events.length; chart.append(axis2);
+  const cross = svg("line", { y1: m.t, y2: H - m.b, stroke: "var(--axis)", "stroke-width": 1, visibility: "hidden" }); chart.append(cross);
+  const dot = svg("circle", { r: 4, fill: "var(--s1)", stroke: "var(--surface)", "stroke-width": 2, visibility: "hidden" }); chart.append(dot);
+  const hit = svg("rect", { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: "transparent", tabindex: 0 }); chart.append(hit);
+  const show = (i, cx, cy) => { const e = events[i]; cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.setAttribute("visibility", "visible");
+    dot.setAttribute("cx", x(i)); dot.setAttribute("cy", y(e.resident_bytes)); dot.setAttribute("visibility", "visible");
+    tip([bytes(e.resident_bytes) + " resident", `${e.action} ${e.module}` + (e.ms != null ? ` · ${e.ms} ms` : "")], cx, cy); };
+  hit.addEventListener("pointermove", (ev) => { const box = chart.getBoundingClientRect(); const px = (ev.clientX - box.left) * W / box.width;
+    const i = Math.max(0, Math.min(events.length - 1, Math.round((px - m.l) / (W - m.l - m.r) * (events.length - 1)))); show(i, ev.clientX, ev.clientY); });
+  hit.addEventListener("focus", () => { const box = chart.getBoundingClientRect(); show(events.length - 1, box.right - 80, box.top + 40); });
+  for (const type of ["pointerleave", "blur"]) hit.addEventListener(type, () => { cross.setAttribute("visibility", "hidden"); dot.setAttribute("visibility", "hidden"); tip(null); });
+  const table = el("table", {}, el("thead", {}, el("tr", {}, ...["#", "Event", "Load, ms", "Resident"].map((h, i) => el("th", { class: i > 1 ? "num" : "", text: h })))));
+  const tb = el("tbody");
+  events.forEach((e, i) => tb.append(el("tr", {}, el("td", { class: "num", text: String(i + 1) }), el("td", {}, e.action + " ", el("code", { text: e.module })),
+    el("td", { class: "num", text: e.ms != null ? String(e.ms) : "" }), el("td", { class: "num", text: bytes(e.resident_bytes) }))));
+  table.append(tb);
+  box.replaceChildren(el("div", {}, chart), el("div", {}, table));
+}
+
+function tokens(text) {  // the toy tokenizer: every word is a token, every character of a number is a token
+  const words = text.split(" "); const map = []; let n = 0;
+  words.forEach((w, i) => { const count = /^-?\d+(\.\d+)?$/.test(w) ? w.length : 1; for (let k = 0; k < count; k++) map[n++] = i; });
+  return { words, map };
+}
+function renderTrace() {
+  const box = $("trace"); const demo = state.report && state.report.dynamic_loading && state.report.dynamic_loading.demo;
+  if (!demo || !demo.length) { box.replaceChildren(el("div", { class: "empty", text: "No traces yet. Run: python scripts/toy_walkthrough.py" })); return; }
+  const select = el("select", { "aria-label": "Example" });
+  demo.forEach((d, i) => select.append(el("option", { value: String(i), text: `${i + 1}. loaded: ${(d.loaded || []).join(", ") || "nothing"}` })));
+  select.value = String(Math.min(Number(box.dataset.pick || demo.length - 1), demo.length - 1));
+  const view = el("div");
+  const draw = () => {
+    box.dataset.pick = select.value;
+    const d = demo[Number(select.value)]; const calls = d.trace || []; const { words, map } = tokens(d.text);
+    const cls = words.map(() => new Set());
+    for (const c of calls) {
+      if (map[c.position - 1] != null) cls[map[c.position - 1]].add("site");   // positions count the start token
+      for (const p of c.pointers || []) if (p !== "RES" && map[p - 1] != null) cls[map[p - 1]].add("arg");
+    }
+    const lastCall = calls[calls.length - 1];
+    if (lastCall && lastCall.final && lastCall.result != null) { const site = map[lastCall.position - 1]; if (words[site + 1] === lastCall.result) cls[site + 1].add("out"); }
+    const text = el("p", { class: "text" });
+    words.forEach((w, i) => { text.append(el("span", { class: [...cls[i]].join(" "), text: w }), document.createTextNode(" ")); });
+    const legend = el("div", { class: "legend" }, el("span", {}, el("i", { style: "outline:2px solid var(--s1); border-radius:3px" }), document.createTextNode("place of the call")),
+      el("span", {}, el("i", { style: "border-bottom:3px solid var(--s2)" }), document.createTextNode("argument pointed at")),
+      el("span", {}, el("i", { style: "background: color-mix(in srgb, var(--s3) 22%, transparent)" }), document.createTextNode("printed by the emitter")));
+    const table = el("table", {}, el("thead", {}, el("tr", {}, ...["Step", "Module and operation", "Arguments", "Result", "Score", "Final"].map((h, i) => el("th", { class: i === 4 ? "num" : "", text: h })))));
+    const tb = el("tbody");
+    for (const c of calls) tb.append(el("tr", {}, el("td", { text: String(c.step) }), el("td", {}, el("code", { text: `${c.fn}.${c.op}` })),
+      el("td", { text: (c.args || []).map((a, k) => `${a} (${c.pointers[k] === "RES" ? "RES" : "token " + c.pointers[k]})`).join(", ") }),
+      el("td", { text: c.error ? "error: " + c.error : c.result }), el("td", { class: "num", text: Number(c.score).toFixed(3) }),
+      el("td", {}, pill(c.final ? "good" : "", c.final ? "final" : "not final"))));
+    table.append(tb);
+    const note = !calls.length ? "No module was called: the core printed its own token."
+      : lastCall.final ? "" : "The last call was not final and nothing continued the chain, so nothing was printed: the model abstained.";
+    view.replaceChildren(text, legend, calls.length ? table : el("div"), el("p", { class: "sub", style: "margin-top:8px", text: note }));
+  };
+  select.addEventListener("change", draw);
+  box.replaceChildren(select, view); draw();
+}
+
+function tip(lines, cx, cy) {
+  const t = $("tip");
+  if (!lines) { t.style.display = "none"; return; }
+  t.replaceChildren(el("b", { text: lines[0] }), document.createTextNode(lines[1] || ""));
+  t.style.display = "block";
+  t.style.left = Math.min(cx + 14, window.innerWidth - t.offsetWidth - 8) + "px"; t.style.top = Math.max(8, cy - t.offsetHeight - 10) + "px";
+}
+function tipOn(node, lines) {
+  node.addEventListener("pointermove", (ev) => tip(lines(), ev.clientX, ev.clientY));
+  node.addEventListener("focus", () => { const b = node.getBoundingClientRect(); tip(lines(), b.left + 60, b.top); });
+  for (const type of ["pointerleave", "blur"]) node.addEventListener(type, () => tip(null));
+}
+
+// ---- files in: picker and drop. Files out: export of what is shown ------------------------------
+async function takeFiles(list) {
+  const problems = [];
+  for (const file of list) {
+    try { const data = JSON.parse(await file.text()); const kind = kindOf(data); if (kind) setData(kind, data, "file"); else problems.push(`${file.name}: not a status, registry or report file`); }
+    catch (err) { problems.push(`${file.name}: not valid JSON`); }
+  }
+  if (problems.length) $("hint").textContent = problems.join("; ");
+}
+$("files").addEventListener("change", (ev) => { takeFiles(ev.target.files); ev.target.value = ""; });
+document.addEventListener("dragover", (ev) => ev.preventDefault());
+document.addEventListener("drop", (ev) => { ev.preventDefault(); takeFiles(ev.dataTransfer.files); });
+$("export").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify({ exported: new Date().toISOString(), origin, ...state }, null, 1)], { type: "application/json" });
+  const a = el("a", { href: URL.createObjectURL(blob), download: "flow-console-view.json" }); document.body.append(a); a.click(); a.remove(); URL.revokeObjectURL(a.href);
+});
+
+// ---- show, load, update ---------------------------------------------------------------------------
+try {
+  const sample = JSON.parse($("sample").textContent.replace("/*SAMPLE-START*/", "").replace("/*SAMPLE-END*/", ""));
+  for (const kind of Object.keys(state)) if (sample[kind]) { state[kind] = sample[kind]; origin[kind] = "sample"; }
+} catch (err) { $("hint").textContent = "The embedded sample could not be read."; }
+render();
+if (location.protocol.startsWith("http")) for (const [kind, url] of Object.entries(LIVE))
+  fetch(url, { cache: "no-store" }).then((r) => r.ok ? r.json() : null).then((data) => { if (data && kindOf(data) === kind) setData(kind, data, "live"); }).catch(() => {});
+</script>
+</body>
+</html>

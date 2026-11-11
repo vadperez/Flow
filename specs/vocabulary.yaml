@@ -1,0 +1,110 @@
+# Flow v0 function vocabulary (pipeline v0.3 draft, step S1.2; spec v0.2, section 5).
+# Status of this file: DRAFT. It is frozen at gate G1 and changes afterwards only through a
+# change request approved at a gate (pipeline Annex D, rule 6).
+#
+# starter: what this starter kit already contains for the function
+#   body     written weights exist and pass their tests (library/<id>/)
+#   toy      trigger and binder were fitted to the toy core by scripts/toy_walkthrough.py
+#   -        nothing yet
+version: 0.3-draft
+types: [NUMBER, SYMBOL, FLAG]
+functions:
+  - id: fn.add_exact.v1
+    function: add_exact
+    kind: register_fn
+    operations: [add, subtract]
+    signature: {args: [NUMBER, NUMBER], result: NUMBER}
+    route: programmed
+    pipeline_step: S5A.1
+    starter: [body, toy]
+  - id: fn.compare_numeric.v1
+    function: compare_numeric
+    kind: register_fn
+    operations: [greater, less, equal]
+    signature: {args: [NUMBER, NUMBER], result: FLAG}
+    route: programmed
+    pipeline_step: S5A.1
+    starter: [body, toy]
+  - id: fn.successor.v1
+    function: successor
+    kind: register_fn
+    operations: [next_number, next_symbol]
+    signature: {args: [NUMBER], result: NUMBER}      # second form: (SYMBOL) -> SYMBOL, from a written table
+    route: programmed
+    pipeline_step: S5A.2
+    starter: []
+  - id: fn.unit_convert.v1
+    function: unit_convert
+    kind: register_fn
+    operations: [convert]
+    signature: {args: [NUMBER, SYMBOL, SYMBOL], result: NUMBER}
+    route: programmed                                 # SI prefixes are digit shifts
+    pipeline_step: S5A.2
+    starter: []
+  - id: fn.unit_convert.lab.v1
+    function: unit_convert
+    kind: register_fn
+    domain: biomed.lab_units
+    parent: fn.unit_convert.v1
+    operations: [convert]
+    signature: {args: [NUMBER, SYMBOL, SYMBOL], result: NUMBER}
+    route: programmed                                 # plus a written table of analyte factors
+    pipeline_step: S9.2
+    starter: []
+  - id: fn.fact_lookup.v1
+    function: fact_lookup
+    kind: lookup_fn
+    operations: [lookup]
+    signature: {args: [SYMBOL, SYMBOL], result: [SYMBOL, NUMBER]}
+    route: written_rows
+    packs: [kb.general.v1, kb.domain.v1]
+    pipeline_step: S5B.1
+    starter: []
+  - id: fn.bind_track.v1
+    function: bind_track
+    kind: state_fn
+    operations: [bind, query]
+    signature: {args: [SYMBOL, SYMBOL], result: NONE}  # query: (SYMBOL) -> SYMBOL
+    route: programmed                                  # slot memory over STATE
+    pipeline_step: S5C.1
+    starter: []                                        # the slot memory itself is in src/flow/typesys/registers.py
+  - id: fn.extract_slots.v1
+    function: extract_slots
+    kind: delta_skill
+    route: distilled
+    pipeline_step: S5D.1
+    starter: []
+  - id: fn.extract_dosing.clinical.v1
+    function: extract_slots
+    kind: delta_skill
+    domain: biomed.clinical_text
+    parent: fn.extract_slots.v1
+    route: distilled
+    pipeline_step: S9.2
+    starter: []
+  - id: fn.rule_induce.v1
+    function: rule_induce
+    kind: delta_skill
+    route: trained
+    pipeline_step: S5D.2
+    starter: []
+  - id: reg.know_gate.v1
+    function: know_gate
+    kind: regulator
+    route: programmed                                  # rule on MISS and low confidence, plus a probe
+    pipeline_step: S5E.1
+    starter: []
+  - id: reg.refuse_gate.v1
+    function: refuse_gate
+    kind: regulator
+    critical: true                                     # pinned in fast memory, never paged out
+    route: trained
+    pipeline_step: S5E.1
+    starter: []
+compositions:                                          # no module of their own: the call loop chains calls
+  - {name: two_hop, chain: [fact_lookup, fact_lookup]}
+  - {name: count_items, chain: [successor on a counter kept in STATE]}
+held_back:                                             # built only in the add-a-function trial (S9.6)
+  - {function: max_min, signature: {args: [NUMBER, NUMBER], result: NUMBER}}
+  - {pack: kb.heldout.v1}
+reserved_tokens: ["<abstain>", "<unknown>", "<refuse>"]

@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "flow/manifest.schema.json",
+  "title": "Flow module manifest",
+  "description": "One manifest per module pack (spec section 4.3, pipeline Annex C). A pack is a folder: manifest.yaml plus the files it names.",
+  "type": "object",
+  "required": ["id", "kind", "function", "version", "status", "portable_body", "swap", "provenance"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {"type": "string", "pattern": "^(fn|kb|reg)\\.[a-z0-9_]+(\\.[a-z0-9_]+)*\\.v[0-9]+$", "description": "for example fn.add_exact.v1 or fn.extract_dosing.clinical.v1"},
+    "kind": {"enum": ["register_fn", "lookup_fn", "state_fn", "delta_skill", "regulator", "knowledge_pack"]},
+    "function": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+    "operations": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "domain": {"type": ["string", "null"], "description": "set for a domain-bound variant, for example biomed.clinical_text"},
+    "parent": {"type": ["string", "null"], "description": "id of the generic module this one was differentiated from"},
+    "signature": {
+      "type": "object", "required": ["args", "result"], "additionalProperties": false,
+      "properties": {
+        "args": {"type": "array", "items": {"enum": ["NUMBER", "SYMBOL", "FLAG"]}, "maxItems": 3},
+        "result": {"oneOf": [{"enum": ["NUMBER", "SYMBOL", "FLAG", "NONE"]}, {"type": "array", "items": {"enum": ["NUMBER", "SYMBOL", "FLAG"]}}]}
+      }
+    },
+    "trigger": {
+      "type": "object", "required": ["file", "threshold"], "additionalProperties": false,
+      "properties": {"file": {"type": "string"}, "threshold": {"type": "number", "minimum": 0, "maximum": 1}}
+    },
+    "binder": {
+      "type": "object", "required": ["file", "pointers"], "additionalProperties": false,
+      "properties": {"file": {"type": "string"}, "pointers": {"type": "integer", "minimum": 0, "maximum": 3}}
+    },
+    "heads_config": {"type": "object", "description": "sizes needed to rebuild the trigger and binder networks"},
+    "body": {
+      "type": "object", "required": ["route"], "additionalProperties": false,
+      "properties": {
+        "file": {"type": "string"},
+        "route": {"enum": ["programmed", "trained", "distilled", "generated", "grafted", "written_rows"]},
+        "format": {"type": "string"},
+        "dtype": {"enum": ["float16", "float32", "bfloat16"]}
+      }
+    },
+    "packs": {"type": "array", "items": {"type": "string"}, "description": "knowledge packs a lookup function reads"},
+    "surfaces": {
+      "type": "object", "description": "what a delta skill may change in the core",
+      "required": ["layers", "matrices", "rank"], "additionalProperties": false,
+      "properties": {
+        "layers": {"type": "array", "items": {"type": "string"}},
+        "matrices": {"type": "array", "items": {"enum": ["query", "output", "mlp_in", "mlp_out"]}},
+        "rank": {"type": "integer", "minimum": 1}
+      }
+    },
+    "portable_body": {"type": "boolean", "description": "true when the body depends only on the type system"},
+    "fitted_to": {"type": ["string", "null"], "description": "core release the trigger and binder were fitted to; null for a pack that has only a body"},
+    "swap": {
+      "type": "object", "required": ["any_token", "kv_write"], "additionalProperties": false,
+      "properties": {"any_token": {"type": "boolean"}, "kv_write": {"const": false}, "paging": {"type": "string"}, "pinned": {"type": "boolean"}}
+    },
+    "cost": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "params": {"type": "integer", "minimum": 0}, "nonzero": {"type": "integer", "minimum": 0},
+        "bytes": {"type": "integer", "minimum": 0}, "flops_per_call": {"type": "number", "minimum": 0}
+      }
+    },
+    "tests": {"type": "string"},
+    "provenance": {
+      "type": "object", "required": ["builder", "license"], "additionalProperties": false,
+      "properties": {"builder": {"type": "string"}, "license": {"type": "string"}, "built": {"type": "string"}, "source": {"type": "string"}}
+    },
+    "status": {"enum": ["proposed", "prototype", "active", "differentiating", "suppressed", "eliminated", "archived"]},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "sha256": {"oneOf": [{"type": "string"}, {"type": "object", "additionalProperties": {"type": "string"}}]}
+  },
+  "allOf": [
+    {"if": {"properties": {"kind": {"const": "delta_skill"}}}, "then": {"required": ["surfaces"], "properties": {"portable_body": {"const": false}}}},
+    {"if": {"properties": {"kind": {"enum": ["register_fn", "lookup_fn", "state_fn"]}}}, "then": {"required": ["signature"]}},
+    {"if": {"required": ["trigger"]}, "then": {"properties": {"fitted_to": {"type": "string"}}, "required": ["fitted_to"]}}
+  ]
+}

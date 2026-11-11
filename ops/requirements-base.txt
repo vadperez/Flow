@@ -1,0 +1,5 @@
+# Type system, written weights, registry. No PyTorch needed.
+numpy>=2.0
+pyyaml>=6.0
+jsonschema>=4.20
+safetensors>=0.5
