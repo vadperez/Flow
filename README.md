@@ -2,6 +2,8 @@
 
 **Flow** is a proposal for a function-first modular neural model: a small core, typed registers, and function modules that are kept as separate packs of files and loaded and unloaded while the model generates. Exact functions (arithmetic, comparison, lookup) are written directly as weights instead of being learned, and the core is trained not to learn them.
 
+<img width="2880" height="1800" alt="preview" src="https://github.com/user-attachments/assets/4ed41205-ea7f-4de8-aa1b-c3850f3e440d" />
+
 ## What is new
 
 **How models are built today.** A conventional neural model is one block of weights. Its designers choose layer types and sizes, then train everything on a broad objective. Whatever functions the model needs (arithmetic, comparison, recall of facts, keeping state) emerge somewhere inside those weights, approximately, and mixed with everything else. Three consequences follow:
