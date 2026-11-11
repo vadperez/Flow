@@ -1,0 +1,14 @@
+# outputs: everything here can be rebuilt
+models/
+runs/
+reports/*
+!reports/.gitkeep
+registry/*.sqlite
+ops/status.json
+# caches
+__pycache__/
+*.pyc
+.pytest_cache/
+.hypothesis/
+*.egg-info/
+.venv/
